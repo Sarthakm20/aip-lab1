@@ -8,10 +8,10 @@
 
 ```
 failure mode          n    share   cumulative  ███████████████████████████████
-chunk_boundary        16   100.0%   100.0%    ███████████████████████████████
+chunk_boundary        12   100.0%   100.0%    ███████████████████████████████
 ```
 
-*All 16 failures fall into **mode 2 – Chunk boundary**. No other mode appears in the tally.*
+*12 failures fall into **mode 2 – Chunk boundary**. 4 failures fall into **mode 6 - Generation error**.*
 
 **Per‑question diagnostic evidence**
 
@@ -118,7 +118,7 @@ Thus the system now suffers primarily from generation errors rather than retriev
 ---
 
 ## 9. Summary & next steps
-* **Diagnosis:** All original failures were mode 2 (chunk‑boundary).  After shrinking chunks, the dominant error shifted to **generation (mode 6)**.
+* **Diagnosis:** 12 original failures were mode 2 (chunk‑boundary).  After shrinking chunks, the dominant error shifted to **generation (mode 6)**.
 * **Fix applied:** Markdown chunk size = 400 characters (free, cost‑neutral).
 * **Outcome:** Correctness dropped (‑0.038) and latency increased, while cost stayed within budget.  The predicted 5‑question recovery did not materialise.
 * **Next steps (recommended):**
