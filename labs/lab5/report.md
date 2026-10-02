@@ -1,6 +1,6 @@
 # Lab 5 — RAG v2: Diagnose, Fix, Prove
 
-**Input:** `reports/lab4.json` (45 questions: 40 answerable, 5 unanswerable) · Baseline: dense retriever (markdown-800 chunks, no reranker) + `gemini-3.7-flash` generator + `gemini-3.5-flash` judge.
+**Input:** `reports/lab4.json` (45 questions: 40 answerable, 5 unanswerable) · Baseline: dense retriever (markdown-800 chunks, no reranker).
 
 ---
 
