@@ -1,0 +1,3 @@
+{"run_id": "20261002-213202", "span_id": "bd854c3f5455", "parent_id": null, "name": "embed.batch", "ts": 1790956922.2225149, "model": "gemini/gemini-embedding-001", "n": 83, "n_uncached": 0, "status": "ok", "duration_ms": 0.0}
+{"run_id": "20261002-213202", "span_id": "5f057ee44e1b", "parent_id": "5a5de1173252", "name": "embed.batch", "ts": 1790956922.242915, "model": "gemini/gemini-embedding-001", "n": 1, "n_uncached": 0, "status": "ok", "duration_ms": 0.0}
+{"run_id": "20261002-213202", "span_id": "5a5de1173252", "parent_id": null, "name": "retrieve.dense", "ts": 1790956922.241746, "k": 5, "status": "ok", "duration_ms": 2.28}
