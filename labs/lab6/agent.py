@@ -10,14 +10,21 @@ import sys
 import time
 from pathlib import Path
 from typing import Any
-
+import re
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from aip.cost import Budget  # noqa: E402
-from aip.guards import ToolGuard, delimit_untrusted, detect_injection  # noqa: E402
+from aip.cost import Budget, BudgetExceeded  # noqa: E402
+from aip.guards import (  # noqa: E402
+    InjectionVerdict,
+    ToolGuard,
+    UNTRUSTED_SYSTEM_CLAUSE,
+    delimit_untrusted,
+    detect_injection,
+    redact_pii,
+)
 from aip.llm import chat  # noqa: E402
 from aip.retrieval import format_context  # noqa: E402
 
@@ -69,6 +76,39 @@ SCHEMAS = {"search_policy": SearchArgs, "get_policy_details": PolicyArgs,
 _RETRIEVER = None
 
 
+_ACTIVE_LAYERS: set[int] = set()
+_TUNED_DETECTOR: bool = True
+
+_NAIVE_SIGNALS = [
+    ("override", re.compile(r"ignore\b.{0,40}\bprevious", re.I)),
+    ("role_switch", re.compile(r"\bact as (?:if|an?)\b|\byou are now\b", re.I)),
+    ("exfiltration", re.compile(r"\b(?:reveal|print|repeat|show|output)\b.{0,40}\b(?:system prompt|instructions|api[_ ]?key|secret|token)\b", re.I)),
+    ("delimiter_break", re.compile(r"</?(?:system|instructions?|context|untrusted)>|```\s*system", re.I)),
+    ("tool_coercion", re.compile(r"\b(?:call|invoke|use)\b.{0,30}\btool\b.{0,60}\b(?:delete|transfer|send|email|drop|refund)\b", re.I)),
+    ("encoded", re.compile(r"(?:[A-Za-z0-9+/]{40,}={0,2})")),
+]
+
+_TUNED_SIGNALS = [
+    ("override", re.compile(r"ignore (?:all |any |the )?(?:previous|prior|above)\s+(?:instructions?|prompts?|rules?|directives?)", re.I)),
+    ("role_switch", re.compile(r"\byou are now\b|\bnew (?:system )?(?:prompt|instructions?)\b|\bact as (?:a |an )?(?!first[- ]time|customer|user|buyer|patient|client)\w+", re.I)),
+    ("exfiltration", re.compile(r"\b(?:reveal|print|repeat|show|output)\b.{0,40}\b(?:system prompt|instructions|api[_ ]?key|secret|token)\b", re.I)),
+    ("delimiter_break", re.compile(r"</?(?:system|instructions?|context|untrusted)>|```\s*system", re.I)),
+    ("tool_coercion", re.compile(r"\b(?:call|invoke|use)\b.{0,30}\btool\b.{0,60}\b(?:delete|transfer|send|email|drop|refund)\b", re.I)),
+    ("encoded", re.compile(r"(?:[A-Za-z0-9+/]{40,}={0,2})")),
+]
+
+
+def check_injection(text: str, tuned: bool = True) -> InjectionVerdict:
+    signals = _TUNED_SIGNALS if tuned else _NAIVE_SIGNALS
+    hits, detail = [], {}
+    for name, pat in signals:
+        m = pat.search(text)
+        if m:
+            hits.append(name)
+            detail[name] = m.group()[:120]
+    return InjectionVerdict(bool(hits), hits, detail)
+
+
 def search_policy(query: str) -> str:
     """Search the policy corpus. Returns untrusted document text."""
     global _RETRIEVER
@@ -79,10 +119,10 @@ def search_policy(query: str) -> str:
         chunks = [c for d, t in load_corpus().items() for c in markdown_chunks(t, d, 800)]
         _RETRIEVER = DenseRetriever(chunks, show_progress=False)
     hits = _RETRIEVER.search(query, k=4)
-    # TODO D1: this returns raw corpus text straight into the model's context.
-    #          Wrap it with delimit_untrusted(). Do NOT do that yet -- Part C
-    #          needs the unguarded baseline first.
-    return format_context(hits, max_chars=4000)
+    raw = format_context(hits, max_chars=4000)
+    if 1 in _ACTIVE_LAYERS:
+        return delimit_untrusted(raw)
+    return raw
 
 
 def get_policy_details(policy_number: str) -> dict:
@@ -147,14 +187,44 @@ Answer user queries by calling the appropriate tools, feeding results back, and 
 
 
 def run_agent(question: str, *, guard: ToolGuard | None = None,
+              layers: set[int] | None = None,
+              tuned_detector: bool = True,
               max_seconds: float = 60.0, budget_usd: float = 0.05,
               tier: str = "MAIN") -> dict:
     """Tool‑calling loop with three termination conditions.
 
     Returns {"answer": str, "tool_log": [...], "stopped_because": str}.
     """
-    # Initialise message history with system prompt and user question
-    messages = [{"role": "system", "content": SYSTEM},
+    global _ACTIVE_LAYERS, _TUNED_DETECTOR
+    active_layers = set(layers) if layers is not None else set()
+    _ACTIVE_LAYERS = active_layers
+    _TUNED_DETECTOR = tuned_detector
+
+    # Layer 2: Heuristic injection detector on user input
+    if 2 in active_layers:
+        verdict = check_injection(question, tuned=tuned_detector)
+        if verdict.flagged:
+            return {
+                "answer": "I cannot fulfill this request as it contains prohibited instruction-override patterns.",
+                "tool_log": [],
+                "stopped_because": "injection_detected",
+            }
+
+    # Layer 4: Ensure guardrails exist when Layer 4 is active
+    if 4 in active_layers and guard is None:
+        guard = ToolGuard(
+            max_calls=6,
+            allow={"search_policy", "get_policy_details", "compute_premium"},
+            requires_confirmation={"issue_refund"},
+            confirm_fn=lambda name, a: False,
+        )
+
+    # Initialise message history with system prompt (Layer 1 appends untrusted clause)
+    sys_prompt = SYSTEM
+    if 1 in active_layers:
+        sys_prompt = SYSTEM + "\n\n" + UNTRUSTED_SYSTEM_CLAUSE
+
+    messages = [{"role": "system", "content": sys_prompt},
                 {"role": "user", "content": question}]
     start = time.time()
     tool_log: list[dict] = []
@@ -179,9 +249,11 @@ def run_agent(question: str, *, guard: ToolGuard | None = None,
                 result = chat(messages, system=None, tier=tier,
                               tools=tool_specs(), tool_choice="auto",
                               return_full=True)
-            except Exception as exc:
-                # If the budget was exceeded we break
+            except BudgetExceeded:
                 stopped = "budget"
+                break
+            except Exception as exc:
+                stopped = "error"
                 break
             # Extract tool calls if any
             tool_calls = result.get("tool_calls", [])
@@ -190,34 +262,60 @@ def run_agent(question: str, *, guard: ToolGuard | None = None,
                 answer = result.get("text", "")
                 stopped = "answered"
                 break
+            # Add assistant message with tool calls to history
+            messages.append({
+                "role": "assistant",
+                "content": result.get("text") or None,
+                "tool_calls": [
+                    {
+                        "id": tc.get("id") or f"call_{i}",
+                        "type": "function",
+                        "function": {
+                            "name": tc["name"],
+                            "arguments": tc["arguments"] if isinstance(tc["arguments"], str) else json.dumps(tc["arguments"]),
+                        },
+                    }
+                    for i, tc in enumerate(tool_calls)
+                ],
+            })
             # Process each tool call sequentially
-            for tc in tool_calls:
+            for i, tc in enumerate(tool_calls):
                 name = tc.get("name")
                 raw_args = tc.get("arguments", "{}")
                 try:
-                    args = json.loads(raw_args)
+                    args = json.loads(raw_args) if isinstance(raw_args, str) else (raw_args or {})
                 except json.JSONDecodeError:
                     args = {}
                 # Invoke the tool (via guard if present)
+                exc = None
                 try:
                     if guard:
                         output = guard.call(name, args, REGISTRY, schemas=SCHEMAS)
                     else:
                         output = REGISTRY[name](**args)
                     tool_result = {"ok": True, "result": output}
-                except Exception as exc:
+                except Exception as e:
+                    exc = e
                     # Capture any error (including ToolDenied) as a result
-                    tool_result = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
+                    tool_result = {"ok": False, "error": f"{type(e).__name__}: {e}"}
                 # Record in log
                 tool_log.append({"tool": name, "args": args, "result": tool_result})
-                # Append the tool result to the message history for the model to see
-                messages.append({"role": "assistant", "content": json.dumps(tool_result)})
+                # Append the tool result with role: "tool"
+                call_id = tc.get("id") or f"call_{i}"
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": call_id,
+                    "name": name,
+                    "content": json.dumps(tool_result),
+                })
                 # Increment our own counter when no guard is used
                 if guard is None:
                     calls_made += 1
                 # If guard signalled exhaustion via exception, break out
-                if isinstance(exc, Exception) and "max_calls" in str(exc):
+                if exc is not None and "max_calls" in str(exc):
                     stopped = "max_calls"
                     break
+            if stopped == "max_calls":
+                break
             # Continue the loop – the model now sees the tool results and can decide next step
     return {"answer": answer, "tool_log": tool_log, "stopped_because": stopped}
