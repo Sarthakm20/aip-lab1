@@ -78,18 +78,18 @@ Shrinking chunk size to 400 characters increased chunk count by **1.43×** ($164
 
 Evaluated across all 45 questions on cold live runs (`reports/lab5_before_after.json`):
 
-| Metric | Baseline (size 800) | After Fix (size 400) | Delta | Evaluation & Analysis |
-|---|---|---|---|---|
-| **Correctness (Answerable, n=40)** | **0.7625** (61/80) | **0.7000** (56/80) | **−0.0625** | ❌ **Sharp Regression** (−5 net points) |
-| **Correctness (All 45 questions)** | 0.7889 (71/90) | 0.6889 (62/90) | **−0.1000** | ❌ Regressed across all questions |
-| **Faithfulness** | **1.0000** (45/45) | **0.9778** (44/45) | **−0.0222** | ⚠️ 1 unsupported claim introduced |
-| **Citation Validity** | **1.0000** (45/45) | **1.0000** (45/45) | **0.0000** | ✅ Code validation maintained |
-| **Refusal Recall** | **1.0000** (5/5) | **0.6000** (3/5) | **−0.4000** | ❌ Q36 & Q40 hallucinated |
-| **Refusal Precision** | **0.6250** (5/8) | **0.5000** (3/6) | **−0.1250** | ❌ 3 true / 6 total refusals |
-| **Retrieval nDCG@10** | 0.8458 | 0.8527 | **+0.0069** | Slightly higher chunk ranking |
-| **Retrieval Recall@5** | 0.8988 | 0.9028 | **+0.0040** | Marginal retrieval gain |
-| **Cost per Query** | \$0.0080 | \$0.0093 | **+\$0.0013** | +16% (longer reasoning tokens) |
-| **p95 Latency (Cold Live Run)** | **4,310 ms** | **4,285 ms** | **−25 ms** | Within normal API latency variance |
+| Metric | Baseline (size 800) | After Fix (size 400) | Delta |
+|---|---|---|---|
+| **Correctness (Answerable, n=40)** | **0.7625** (61/80) | **0.7000** (56/80) | **−0.0625** |
+| **Correctness (All 45 questions)** | 0.7889 (71/90) | 0.6889 (62/90) | **−0.1000** |
+| **Faithfulness** | **1.0000** (45/45) | **0.9778** (44/45) | **−0.0222** |
+| **Citation Validity** | **1.0000** (45/45) | **1.0000** (45/45) | **0.0000** |
+| **Refusal Recall** | **1.0000** (5/5) | **0.6000** (3/5) | **−0.4000** |
+| **Refusal Precision** | **0.6250** (5/8) | **0.5000** (3/6) | **−0.1250** |
+| **Retrieval nDCG@10** | 0.8458 | 0.8527 | **+0.0069** |
+| **Retrieval Recall@5** | 0.8988 | 0.9028 | **+0.0040** |
+| **Cost per Query** | \$0.0080 | \$0.0093 | **+\$0.0013** |
+| **p95 Latency (Cold Live Run)** | **4,310 ms** | **4,285 ms** | **−25 ms** |
 
 *Provenance:* Baseline from `reports/lab4.json` (`.aip_traces/20260923-024546.jsonl`); post-fix from `reports/lab4_fixed.json` (`.aip_traces/20260923-125400.jsonl`).  
 *Key Insight:* **Retrieval metrics slightly improved (+0.0069 nDCG) while answer correctness plummeted (−0.0625).** This divergence proves that retrieval quality was decoupled from generation correctness.
