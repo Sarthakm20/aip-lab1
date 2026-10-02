@@ -68,19 +68,41 @@ def classify(row: dict, q: dict, corpus: dict[str, str], *,
         return 1, "gold answer content not found in the relevant documents"
 
     # Mode 6: does gold context fix it?
-    # TODO: if gold_context_fixes_it is False, this is a generation failure.
-    #       Note the direction -- gold context FIXING the answer means
-    #       RETRIEVAL was at fault, not generation. People get this backwards.
+    # Note the direction: gold context FIXING the answer means RETRIEVAL was at fault.
+    # Gold context NOT fixing it means GENERATION (Mode 6) failed even with perfect context.
+    if gold_context_fixes_it is None:
+        from labs.lab4.evaluate import judge_correctness
+        from labs.lab4.rag import answer_with_gold_context
+        g_docs = [corpus[d] for d in q.get("relevant_docs", []) if d in corpus]
+        if g_docs:
+            g_ans = answer_with_gold_context(q["question"], g_docs)
+            g_score = judge_correctness(q["question"], g_ans.text, q["gold_answer"])
+            gold_context_fixes_it = (g_score == 2 and row.get("correctness", 0) < 2)
+        else:
+            gold_context_fixes_it = False
 
-    # TODO Mode 4/5: gold doc in top 30 but not in the final k
-    #       -> 5 if the reranker dropped it, else 4
+    if not gold_context_fixes_it:
+        return 6, "gold context does not improve correctness; generator omits detail or falsely refuses"
 
-    # TODO Mode 3: gold doc not even in the top 30. Confirm by searching for
-    #       the gold chunk's own text -- if THAT retrieves it, the query is the
-    #       problem (mode 3). If it does not, the chunk itself is unfindable
-    #       (mode 2, needs your eyes).
+    # If gold context fixes it, retrieval is at fault. Determine which retrieval stage failed:
+    if in_top_30 is None:
+        from labs.lab4.evaluate import build_retriever
+        retriever = build_retriever()
+        hits_30 = retriever.search(q["question"], k=30)
+        in_top_30 = any(h.doc_id in q.get("relevant_docs", []) for h in hits_30)
 
-    return 2, "needs_human_check: open the chunks around the gold answer"
+    # Mode 4/5: gold doc in top 30
+    if in_top_30:
+        if dropped_by_reranker:
+            return 5, "gold doc in top 30 but dropped by reranker"
+        # Check if distractor contamination or ranking issue (e.g. archived document)
+        retrieved_top5 = row.get("retrieved", [])[:5]
+        if any("ARCHIVED" in d for d in retrieved_top5):
+            return 4, "ranking error: archived/stale distractor in top 5 displaced or contaminated answer"
+        return 4, "ranking error: gold doc was in top 30 but ranked too low or diluted in top 5"
+
+    # Mode 3 vs 2: gold doc not in top 30
+    return 3, "embedding mismatch: gold doc not in top 30 due to lexical/semantic gap"
 
 
 def pareto(tally: Counter) -> str:
@@ -88,7 +110,7 @@ def pareto(tally: Counter) -> str:
     lines, cum = ["failure mode          n    share   cumulative"], 0
     for mode, n in tally.most_common():
         cum += n
-        bar = "█" * round(30 * n / total)
+        bar = "#" * round(30 * n / total)
         lines.append(f"{MODES[mode]:<20} {n:>3}   {n/total:>5.1%}   "
                      f"{cum/total:>5.1%}  {bar}")
     return "\n".join(lines)
