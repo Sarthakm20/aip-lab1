@@ -4,7 +4,7 @@
     "answerable_count": 40,
     "unanswerable_count": 5,
     "total_cost_usd": 0.0,
-    "p95_latency_ms": 8.43761999858543
+    "p95_latency_ms": 10.482240002602339
   },
   "rows": [
     {
@@ -29,7 +29,7 @@
         "claims-timelines",
         "claims-process"
       ],
-      "latency_ms": 9.329199994681403
+      "latency_ms": 12.158999976236373
     },
     {
       "id": "Q02",
@@ -53,7 +53,7 @@
         "plan-silver",
         "plans-overview"
       ],
-      "latency_ms": 5.315899994457141
+      "latency_ms": 10.276000015437603
     },
     {
       "id": "Q03",
@@ -77,7 +77,7 @@
         "maternity-benefits",
         "plan-bronze"
       ],
-      "latency_ms": 4.9878999998327345
+      "latency_ms": 6.185400008689612
     },
     {
       "id": "Q04",
@@ -100,7 +100,7 @@
       "relevant": [
         "pre-existing-conditions"
       ],
-      "latency_ms": 5.622399999992922
+      "latency_ms": 6.215999979758635
     },
     {
       "id": "Q05",
@@ -123,7 +123,7 @@
       "relevant": [
         "policy-renewal-and-portability"
       ],
-      "latency_ms": 4.706499996245839
+      "latency_ms": 8.64059999003075
     },
     {
       "id": "Q06",
@@ -146,7 +146,7 @@
       "relevant": [
         "network-hospitals"
       ],
-      "latency_ms": 5.867600004421547
+      "latency_ms": 6.36210001539439
     },
     {
       "id": "Q07",
@@ -170,7 +170,7 @@
         "plan-gold",
         "plans-overview"
       ],
-      "latency_ms": 4.798100009793416
+      "latency_ms": 6.180199998198077
     },
     {
       "id": "Q08",
@@ -193,7 +193,7 @@
       "relevant": [
         "exclusions"
       ],
-      "latency_ms": 4.834100007428788
+      "latency_ms": 7.500700012315065
     },
     {
       "id": "Q09",
@@ -216,7 +216,7 @@
       "relevant": [
         "plan-gold"
       ],
-      "latency_ms": 4.820400004973635
+      "latency_ms": 5.945899989455938
     },
     {
       "id": "Q10",
@@ -239,7 +239,7 @@
       "relevant": [
         "grievance-redressal"
       ],
-      "latency_ms": 5.45889999193605
+      "latency_ms": 7.795600016834214
     },
     {
       "id": "Q11",
@@ -264,7 +264,7 @@
         "plan-silver",
         "claims-process"
       ],
-      "latency_ms": 4.651499999454245
+      "latency_ms": 9.881799982395023
     },
     {
       "id": "Q12",
@@ -287,7 +287,7 @@
       "relevant": [
         "exclusions"
       ],
-      "latency_ms": 6.794900007662363
+      "latency_ms": 5.332700005965307
     },
     {
       "id": "Q13",
@@ -310,7 +310,7 @@
       "relevant": [
         "policy-renewal-and-portability"
       ],
-      "latency_ms": 7.675300003029406
+      "latency_ms": 9.149299992714077
     },
     {
       "id": "Q14",
@@ -333,7 +333,7 @@
       "relevant": [
         "outpatient-and-wellness"
       ],
-      "latency_ms": 4.876999999396503
+      "latency_ms": 7.585699990158901
     },
     {
       "id": "Q15",
@@ -356,7 +356,7 @@
       "relevant": [
         "glossary"
       ],
-      "latency_ms": 4.779499999131076
+      "latency_ms": 5.7631999952718616
     },
     {
       "id": "Q16",
@@ -380,7 +380,7 @@
         "claims-process",
         "claims-timelines"
       ],
-      "latency_ms": 4.8088999901665375
+      "latency_ms": 5.245500011369586
     },
     {
       "id": "Q17",
@@ -403,7 +403,7 @@
       "relevant": [
         "glossary"
       ],
-      "latency_ms": 4.598400002578273
+      "latency_ms": 8.596500003477558
     },
     {
       "id": "Q18",
@@ -426,7 +426,7 @@
       "relevant": [
         "network-hospitals"
       ],
-      "latency_ms": 4.717599993455224
+      "latency_ms": 7.255100004840642
     },
     {
       "id": "Q19",
@@ -450,7 +450,7 @@
         "plan-silver",
         "claims-process"
       ],
-      "latency_ms": 4.638500002329238
+      "latency_ms": 5.438199994387105
     },
     {
       "id": "Q20",
@@ -476,7 +476,7 @@
         "plan-bronze",
         "plans-overview"
       ],
-      "latency_ms": 5.126800009747967
+      "latency_ms": 8.782400022028014
     },
     {
       "id": "Q21",
@@ -500,7 +500,7 @@
         "policy-renewal-and-portability",
         "pre-existing-conditions"
       ],
-      "latency_ms": 4.822600007173605
+      "latency_ms": 6.195299996761605
     },
     {
       "id": "Q22",
@@ -524,7 +524,7 @@
         "maternity-benefits",
         "dependents-and-family-floater"
       ],
-      "latency_ms": 5.104299998492934
+      "latency_ms": 5.8357999951113015
     },
     {
       "id": "Q23",
@@ -548,7 +548,7 @@
         "outpatient-and-wellness",
         "plan-bronze"
       ],
-      "latency_ms": 5.513199997949414
+      "latency_ms": 7.394000014755875
     },
     {
       "id": "Q24",
@@ -572,7 +572,7 @@
         "plan-silver",
         "glossary"
       ],
-      "latency_ms": 5.866699997568503
+      "latency_ms": 5.887300008907914
     },
     {
       "id": "Q25",
@@ -596,7 +596,7 @@
         "maternity-benefits",
         "plan-gold"
       ],
-      "latency_ms": 6.166099992697127
+      "latency_ms": 8.887299976777285
     },
     {
       "id": "Q26",
@@ -621,7 +621,7 @@
         "plan-silver",
         "plan-bronze"
       ],
-      "latency_ms": 7.560300000477582
+      "latency_ms": 10.533799999393523
     },
     {
       "id": "Q27",
@@ -645,7 +645,7 @@
         "premium-and-payments",
         "outpatient-and-wellness"
       ],
-      "latency_ms": 6.568499986315146
+      "latency_ms": 11.238699982641265
     },
     {
       "id": "Q28",
@@ -669,7 +669,7 @@
         "network-hospitals",
         "claims-process"
       ],
-      "latency_ms": 8.62819999747444
+      "latency_ms": 6.65090000256896
     },
     {
       "id": "Q29",
@@ -692,7 +692,7 @@
       "relevant": [
         "claims-timelines"
       ],
-      "latency_ms": 10.962200001813471
+      "latency_ms": 8.847700024489313
     },
     {
       "id": "Q30",
@@ -716,7 +716,7 @@
         "claims-process",
         "claims-timelines"
       ],
-      "latency_ms": 5.8243999956175685
+      "latency_ms": 6.60200000857003
     },
     {
       "id": "Q31",
@@ -740,7 +740,7 @@
         "claims-timelines",
         "claims-process"
       ],
-      "latency_ms": 6.550799997057766
+      "latency_ms": 9.097300004214048
     },
     {
       "id": "Q32",
@@ -764,7 +764,7 @@
         "plans-overview",
         "plan-gold"
       ],
-      "latency_ms": 6.629099996644072
+      "latency_ms": 5.601700016995892
     },
     {
       "id": "Q33",
@@ -787,7 +787,7 @@
       "relevant": [
         "plans-overview"
       ],
-      "latency_ms": 7.186200004070997
+      "latency_ms": 6.061899999622256
     },
     {
       "id": "Q34",
@@ -812,7 +812,7 @@
         "plan-gold",
         "dependents-and-family-floater"
       ],
-      "latency_ms": 7.354999994277023
+      "latency_ms": 9.465200011618435
     },
     {
       "id": "Q35",
@@ -836,7 +836,7 @@
         "exclusions",
         "outpatient-and-wellness"
       ],
-      "latency_ms": 7.219999999506399
+      "latency_ms": 8.35769998957403
     },
     {
       "id": "Q36",
@@ -857,7 +857,7 @@
         "plans-overview"
       ],
       "relevant": [],
-      "latency_ms": 6.842899994808249
+      "latency_ms": 6.602900015423074
     },
     {
       "id": "Q37",
@@ -881,7 +881,7 @@
         "exclusions",
         "plans-overview"
       ],
-      "latency_ms": 7.473099991329946
+      "latency_ms": 9.629100008169189
     },
     {
       "id": "Q38",
@@ -902,7 +902,7 @@
         "motor-claims-timelines"
       ],
       "relevant": [],
-      "latency_ms": 6.874400001834147
+      "latency_ms": 6.106299988459796
     },
     {
       "id": "Q39",
@@ -923,7 +923,7 @@
         "travel-insurance-exclusions"
       ],
       "relevant": [],
-      "latency_ms": 6.370199989760295
+      "latency_ms": 8.823599986499175
     },
     {
       "id": "Q40",
@@ -946,7 +946,7 @@
       "relevant": [
         "grievance-redressal"
       ],
-      "latency_ms": 5.521600003703497
+      "latency_ms": 6.271299993386492
     },
     {
       "id": "Q41",
@@ -969,7 +969,7 @@
       "relevant": [
         "policy-renewal-and-portability"
       ],
-      "latency_ms": 5.533200004720129
+      "latency_ms": 8.285999996587634
     },
     {
       "id": "Q42",
@@ -993,7 +993,7 @@
         "network-hospitals",
         "claims-process"
       ],
-      "latency_ms": 6.812999999965541
+      "latency_ms": 4.804399999557063
     },
     {
       "id": "Q43",
@@ -1017,7 +1017,7 @@
         "outpatient-and-wellness",
         "premium-and-payments"
       ],
-      "latency_ms": 5.542099999729544
+      "latency_ms": 8.085600013146177
     },
     {
       "id": "Q44",
@@ -1040,7 +1040,7 @@
       "relevant": [
         "plan-silver"
       ],
-      "latency_ms": 5.474199992022477
+      "latency_ms": 6.138900003861636
     },
     {
       "id": "Q45",
@@ -1063,7 +1063,7 @@
       "relevant": [
         "exclusions"
       ],
-      "latency_ms": 5.899299998418428
+      "latency_ms": 8.109800022793934
     }
   ]
 }

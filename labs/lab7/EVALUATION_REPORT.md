@@ -1,6 +1,6 @@
 # Evaluation Report — Aurora Policy Assistant
 **Lab 7 Capstone Deliverable · AI in Practice (Module 1)**  
-*Authors: Sarthak M. & Aarav Sharma · System: Aurora Policy Assistant v1.0 · October 2026*  
+*Authors: Sarthak Monga · System: Aurora Policy Assistant v1.0 · October 2026*  
 *Repository: https://github.com/Sarthakm20/aip-lab1 · CI: https://github.com/Sarthakm20/aip-lab1/actions*
 
 ---
@@ -104,7 +104,7 @@ Tested across 11 representative query pairs (`reports/cache_sweep.json`):
 3. **Pre-Retrieval Status Filter (`status != ARCHIVED`) (EV: +0.0125 Correctness, Fixes Q29, Cost/Latency Delta: $0):**  
    Filter deprecated 2024 documents at search time, recovering Q29 (+1 pt / 80).
 4. **Metadata-Keyed Semantic Cache at 0.850 (EV: Estimated +15% Repeat Hit Rate, 0% Cross-Plan False Hits):**  
-   Plan-keying at 0.88 still captures only 1 paraphrase because the next sits at 0.8566. Keying by `(plan_name, query_embedding)` eliminates cross-plan collisions, allowing the threshold to safely drop to **0.850**—capturing the 0.8566 grace period paraphrase while remaining above the 0.8369 intra-plan room/ICU rent collision.
+   Plan-keying at 0.88 still captures only 1 paraphrase because the next sits at 0.8566. Keying by `(plan_name, query_embedding)` eliminates cross-plan collisions, allowing the threshold to safely drop to **0.850**—capturing the 0.8566 grace period paraphrase while staying above the 0.8369 intra-plan room/ICU rent collision.
 
 ---
 
@@ -116,6 +116,6 @@ Tested across 11 representative query pairs (`reports/cache_sweep.json`):
 - **Deliberate Regression Break (Part D3, commit `d7a31b9` in PR #1):**  
   `python labs/lab7/gate.py --break-gate` simulates restricting retrieval to `final_k=1`. Hit rate collapses to 32/42 = 0.7619 (fails >= 0.850) and correctness scales to 0.7625 * (0.7619 / 0.9762) = 0.5951 (~47.6/80 pts, fails >= 0.750). Result: **Exit code 1 (`GATE FAILED`)**, turning the CI build red and blocking merge.
 
-### Pair Contributions
-- **Sarthak M.:** FastAPI service (`service.py`), multi-tier caching (exact & semantic), SSE streaming endpoint with citation validation, and offline regression gate (`gate.py`, `thresholds.yml`).
-- **Aarav Sharma:** Front-end Streamlit UI (`ui.py`), operations telemetry dashboard (`dashboard.py`), empirical cosine cache sweep analysis (`sweep_cache.py`), and error diagnosis.
+### Work Done
+- FastAPI service (`service.py`), multi-tier caching (exact & semantic), SSE streaming endpoint with citation validation, and offline regression gate (`gate.py`, `thresholds.yml`).
+- Front-end Streamlit UI (`ui.py`), operations telemetry dashboard (`dashboard.py`), empirical cosine cache sweep analysis (`sweep_cache.py`), and error diagnosis.
