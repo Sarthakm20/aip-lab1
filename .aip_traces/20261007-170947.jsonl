@@ -1,0 +1,1 @@
+{"run_id": "20261007-170947", "span_id": "603b070e91cb", "parent_id": null, "name": "embed.batch", "ts": 1791373188.1487067, "model": "gemini/gemini-embedding-001", "n": 164, "n_uncached": 0, "status": "ok", "duration_ms": 0.0}

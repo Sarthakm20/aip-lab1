@@ -1,0 +1,79 @@
+[
+  {
+    "q1": "How long do I have to file a reimbursement claim?",
+    "q2": "What is the deadline for submitting a reimbursement claim?",
+    "same_intent": true,
+    "description": "Reimbursement claim deadline paraphrase",
+    "similarity": 0.9418692588806152
+  },
+  {
+    "q1": "What is the sum insured on Aurora Gold?",
+    "q2": "What is the sum insured on Aurora Silver?",
+    "same_intent": false,
+    "description": "Gold vs Silver sum insured (different amounts)",
+    "similarity": 0.9371569156646729
+  },
+  {
+    "q1": "What is the waiting period on Aurora Gold?",
+    "q2": "What is the waiting period on Aurora Silver?",
+    "same_intent": false,
+    "description": "Gold vs Silver waiting period (different plans/rules)",
+    "similarity": 0.9180783629417419
+  },
+  {
+    "q1": "What is the copay for senior citizens on Gold?",
+    "q2": "What is the copay for senior citizens on Silver?",
+    "same_intent": false,
+    "description": "Senior copay Gold vs Silver",
+    "similarity": 0.9135708212852478
+  },
+  {
+    "q1": "What is the grace period if I miss paying my premium?",
+    "q2": "If I skip paying on time, how long before my policy lapses?",
+    "same_intent": true,
+    "description": "Grace period paraphrase",
+    "similarity": 0.8566303253173828
+  },
+  {
+    "q1": "Does the policy cover AYUSH treatments?",
+    "q2": "Are ayurvedic and homeopathic treatments covered?",
+    "same_intent": true,
+    "description": "AYUSH treatment paraphrase",
+    "similarity": 0.837627112865448
+  },
+  {
+    "q1": "What is the room rent limit on Gold?",
+    "q2": "What is the ICU rent limit on Gold?",
+    "same_intent": false,
+    "description": "Room rent vs ICU limit (different clauses)",
+    "similarity": 0.8369107246398926
+  },
+  {
+    "q1": "What are the maternity benefits on Bronze?",
+    "q2": "What are the maternity benefits on Platinum?",
+    "same_intent": false,
+    "description": "Bronze (no maternity) vs Platinum (maternity included)",
+    "similarity": 0.826945424079895
+  },
+  {
+    "q1": "Can I claim for IVF treatment?",
+    "q2": "Is infertility treatment or IVF covered under the policy?",
+    "same_intent": true,
+    "description": "IVF exclusion paraphrase",
+    "similarity": 0.8200467824935913
+  },
+  {
+    "q1": "What is the road ambulance limit?",
+    "q2": "How much ambulance cover is provided per hospitalization?",
+    "same_intent": true,
+    "description": "Road ambulance coverage paraphrase",
+    "similarity": 0.7415289878845215
+  },
+  {
+    "q1": "Can I claim for dental treatment after an accident?",
+    "q2": "Is routine dental treatment covered under the policy?",
+    "same_intent": false,
+    "description": "Accidental dental (covered) vs routine dental (excluded)",
+    "similarity": 0.7240774631500244
+  }
+]

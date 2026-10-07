@@ -22,6 +22,60 @@ Then read [`SYLLABUS.md`](SYLLABUS.md) and [`SCHEDULE.md`](SCHEDULE.md), then
 
 ---
 
+## ⚡ Lab 7 Quickstart — Run on a Clean Machine in Under 5 Minutes
+
+Lab 7 delivers a production RAG service with caching, streaming, tracing, and an offline regression gate.
+
+### 1. Environment Setup (Clean Machine)
+```bash
+python -m venv .venv
+source .venv/bin/activate        # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 2. Run the Offline Regression Gate (Zero Network & Zero Cost)
+```bash
+# Evaluates the golden set deterministically against the committed cache:
+python labs/lab7/gate.py --config labs/lab7/thresholds.yml
+```
+*Expected Output:* Status `ok` across all 8 metrics, exit code 0 (`GATE PASSED`).
+
+### 3. Verify Deliberate Regression Failure (Part D3)
+```bash
+# Proves the gate fails when retrieval pool degrades (final_k = 1):
+python labs/lab7/gate.py --break-gate
+```
+*Expected Output:* Exits non-zero with `GATE FAILED` on `correctness` and `hit_rate_at_5`.
+
+### 4. Launch the HTTP Service
+```bash
+uvicorn labs.lab7.service:app --port 8000
+```
+Test endpoints with `curl`:
+```bash
+# Health check:
+curl -s http://localhost:8000/health | jq
+
+# Ask question (cached & grounded with citations):
+curl -s -X POST http://localhost:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"How many days do I have to submit a reimbursement claim after discharge?"}' | jq
+
+# Real-time metrics & percentiles:
+curl -s http://localhost:8000/metrics | jq
+```
+
+### 5. Launch User Interface & Observability Dashboard
+```bash
+# Front-end UI with expandable citations & streaming:
+streamlit run labs/lab7/ui.py
+
+# Observability dashboard reading structured spans from .aip_traces/:
+streamlit run labs/lab7/dashboard.py
+```
+
+---
+
 ## What you build
 
 Seven three-hour problems. Each one produces working code and a measured claim.
