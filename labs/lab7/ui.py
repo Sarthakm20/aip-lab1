@@ -38,11 +38,7 @@ try:
     if health_resp.status_code == 200:
         h = health_resp.json()
         st.sidebar.success("Service Online")
-        st.sidebar.metric("Index Chunks", h.get("index_size_chunks", 0))
-        st.sidebar.metric("Exact Cache", h.get("exact_cache_entries", 0))
-        st.sidebar.metric("Semantic Cache", h.get("semantic_cache_entries", 0))
         st.sidebar.caption(f"Model: `{h.get('main_model', 'unknown')}`")
-        st.sidebar.caption(f"Semantic threshold: `{h.get('semantic_threshold', 0.95)}`")
     else:
         st.sidebar.warning(f"Health check: {health_resp.status_code}")
 except Exception:
